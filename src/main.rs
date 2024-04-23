@@ -1,45 +1,59 @@
 use actix_web::{get, web, App, HttpResponse, HttpServer, Responder};
 use serde::{Deserialize, Serialize};
+use serde_json::Value;
+use std::process::Command;
 
-#[derive(Serialize, Deserialize)]
-struct ChangeResult{
-    dollars: u32,
-    cents: u32,
-    change: Vec<u32>
+#[derive(Deserialize, Serialize)]
+struct InputData {
+    text: String,
 }
+
+#[derive(Serialize)]
+struct Summarization {
+    summarized_text: Value,
+}
+
 
 #[get("/")]
 async fn root() -> impl Responder {
     "Summarize Your Text
-    
+    Provide a text to summarize
     **Primary Route:**
-    /summarize/{text}/{max_length}
+    /summarize
     "
 }
 
-#[get("/summarize/{text}/{max_length}")]
-async fn change(info: web::Path<(u32, u32)>) -> HttpResponse{
-    let (dollars, cents) = info.into_inner();
-    let total_cents = dollars * 100 + cents;
-    let change = greedy_coin_change(total_cents);
-    let result = ChangeResult{
-        dollars,
-        cents,
-        change
-    };
-    HttpResponse::Ok().json(result)
+
+async fn summarize(text_data: web::Json<InputData>) -> impl Responder {
+    let output = Command::new("python")
+        .arg("app.py")
+        .arg(&text_data.text)
+        .output();
+    // println!("{:?}", output);
+    match output {
+        Ok(output) => {
+            let output_str = String::from_utf8_lossy(&output.stdout);
+            // println!("{}", output_str);
+            match serde_json::from_str(&output_str) {
+                Ok(summarization_result) => HttpResponse::Ok().json(Summarization {
+                    summarized_text: summarization_result
+                }),
+                Err(_) => HttpResponse::InternalServerError().json("Failed to parse JSON"),
+            }
+        },
+        Err(_) => HttpResponse::InternalServerError().json("Failed to execute command"),
+    }
 }
 
 #[actix_web::main]
 async fn main() -> std::io::Result<()> {
-    HttpServer::new(|| {
+    
+    HttpServer::new(move || {
         App::new()
             .service(root)
-            .service(change)
-            //.route("/change/{dollars}/{cents}", web::get().to(change))
+            .route("/summarize", web::post().to(summarize))
     })
     .bind("0.0.0.0:8080")?
     .run()
     .await
 }
-
