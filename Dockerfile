@@ -23,15 +23,20 @@ FROM debian:stable-slim
 
 # Install runtime dependencies
 RUN apt-get update && \
-    apt-get install -y python3 python3-pip && \
+    apt-get install -y python3 python3-pip python3-venv && \
     ln -s /usr/bin/python3 /usr/bin/python
+
+# Set up a virtual environment
+RUN python3 -m venv /opt/venv
+# Activate virtual environment
+ENV PATH="/opt/venv/bin:$PATH"
+
+# Install Python dependencies
+RUN pip install torch transformers
 
 # Copy the built Rust binary and Python script from the builder stage
 COPY --from=builder /usr/src/app/target/release/ids721-final /usr/local/bin/ids721-final
 COPY --from=builder /usr/src/app/app.py /usr/local/bin/app.py
-COPY --from=builder /usr/src/app/requirements.txt /usr/local/bin/requirements.txt
-# Install Python dependencies
-RUN pip install -r requirements.txt
 
 # Set the working directory
 WORKDIR /usr/local/bin
