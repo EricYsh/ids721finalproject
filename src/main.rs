@@ -29,11 +29,11 @@ async fn summarize(text_data: web::Json<InputData>) -> impl Responder {
         .arg("app.py")
         .arg(&text_data.text)
         .output();
-    // println!("{:?}", output);
+    println!("{:?}", output);
     match output {
         Ok(output) => {
             let output_str = String::from_utf8_lossy(&output.stdout);
-            // println!("{}", output_str);
+            println!("{}", output_str);
             match serde_json::from_str(&output_str) {
                 Ok(summarization_result) => HttpResponse::Ok().json(Summarization {
                     summarized_text: summarization_result
