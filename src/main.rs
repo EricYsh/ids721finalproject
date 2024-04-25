@@ -57,3 +57,22 @@ async fn main() -> std::io::Result<()> {
     .run()
     .await
 }
+
+
+#[cfg(test)]
+mod integration_tests {
+    use super::*;
+    use actix_web::{test, web, App};
+
+    #[actix_web::test]
+    async fn test_summarize_function() {
+        let app = test::init_service(App::new().route("/summarize", web::post().to(summarize))).await;
+        let req = test::TestRequest::post()
+            .uri("/summarize")
+            .set_json(&InputData { text: "Hello, world!".to_string() })
+            .to_request();
+
+        let resp = test::call_service(&app, req).await;
+        assert!(resp.status().is_success());
+    }
+}
