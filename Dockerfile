@@ -41,6 +41,8 @@ COPY --from=builder /usr/src/app/app.py /usr/local/bin/app.py
 # Set the working directory
 WORKDIR /usr/local/bin
 
+RUN chmod +x /usr/local/bin/app.py
+
 # Expose the port the app runs on
 EXPOSE 8080
 
