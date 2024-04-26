@@ -9,8 +9,7 @@ build:
   services:
     - docker:dind
   script:
-    - cargo build --release
-#    - docker build -t test-ecr .
+    - docker build -t test-ecr .
 #    - docker push $CI_REGISTRY_IMAGE:$CI_COMMIT_REF_SLUG
   only:
     - main
