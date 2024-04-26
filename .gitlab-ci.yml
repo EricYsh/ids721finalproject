@@ -5,7 +5,7 @@ stages:
 
 build:
   stage: build
-  image: rust:latest
+  image: docker:latest
   services:
     - docker:dind
   script:
