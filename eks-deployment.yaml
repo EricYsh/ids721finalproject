@@ -1,0 +1,36 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: eks-linux-deployment
+  namespace: eks-app
+  labels:
+    app: eks-linux-app
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: eks-linux-app
+  template:
+    metadata:
+      labels:
+        app: eks-linux-app
+    spec:
+      affinity:
+        nodeAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+            nodeSelectorTerms:
+              - matchExpressions:
+                  - key: kubernetes.io/arch
+                    operator: In
+                    values:
+                      - amd64
+                      - arm64
+      containers:
+        - name: test-ecr
+          image: public.ecr.aws/a9f6i1z5/test-ecr:latest
+          ports:
+            - name: http
+              containerPort: 8080
+          imagePullPolicy: IfNotPresent
+      nodeSelector:
+        kubernetes.io/os: linux

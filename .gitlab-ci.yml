@@ -1,0 +1,41 @@
+stages:
+  - build
+  - test
+#  - deploy
+
+build:
+  stage: build
+  image: rust:latest
+  services:
+    - docker:dind
+  script:
+    - cargo build --release
+    - docker build -t test-ecr .
+#    - docker push $CI_REGISTRY_IMAGE:$CI_COMMIT_REF_SLUG
+  only:
+    - main
+  tags:
+    - docker
+
+test:
+  stage: test
+  image: rust:latest
+  script:
+    - cargo test
+  only:
+    - main
+
+#deploy:
+#  stage: deploy
+#  image: dtzar/helm-kubectl
+#  environment:
+#    name: production
+#  script:
+#    - aws eks --region $AWS_REGION update-kubeconfig --name $EKS_CLUSTER_NAME
+#    - kubectl set image deployment/$DEPLOYMENT_NAME $DEPLOYMENT_NAME=$CI_REGISTRY_IMAGE:$CI_COMMIT_REF_SLUG
+#  only:
+#    - main
+#  tags:
+#    - k8s
+
+
