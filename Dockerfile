@@ -15,7 +15,7 @@ COPY . .
 RUN cargo build --release
 
 # Install Python dependencies
-RUN pip install -r requirements.txt
+RUN pip install --no-cache-dir torch transformers
 
 
 # Use a Debian slim image as the runtime environment
@@ -32,7 +32,7 @@ RUN python3 -m venv /opt/venv
 ENV PATH="/opt/venv/bin:$PATH"
 
 # Install Python dependencies
-RUN pip install torch transformers
+RUN pip install --no-cache-dir torch transformers
 
 # Copy the built Rust binary and Python script from the builder stage
 COPY --from=builder /usr/src/app/target/release/ids721-final /usr/local/bin/ids721-final
