@@ -22,11 +22,43 @@ Develop a web service in Rust that can serve the ML model's inferences. The serv
 Containerize the Rust web service using Docker, ensuring it's well-prepared for deployment. Subsequently, deploy the containerized service to a Kubernetes cluster, configuring it for scalability and reliability.
 
 Build the Rust web service into a Docker container, ensuring it's well-prepared for deployment. Subsequently, deploy the containerized service to a Kubernetes cluster, configuring it for scalability and reliability.
+
+### Build the docker file
 ```bash
- docker build -t idsfinal .
+ docker build -t test-ecr .
 ```
+
+### Run the docker container
+```bash
+docker run -p 8080:8080 test-ecr
+```
+
+### Push the docker image to ECR
+```bash
+aws ecr get-login-password --region us-east-1 | docker login --username AWS --password-stdin 123456789012.dkr.ecr.us-east-1.amazonaws.com
+docker tag test-ecr:latest 123456789012.dkr.ecr.us-east-1.amazonaws.com/test-ecr:latest
+docker push 123456789012.dkr.ecr.us-east-1.amazonaws.com/test-ecr:latest
+```
+
+### Deploy the docker image to EKS
+
+#### Pre-requisites
+- install eksctl
+- install kubectl
+- install awscli
+
+#### Create EKS cluster
+```bash
+eksctl create cluster --name test-eks --region us-east-2
+```
+
+
+```bash
+kubectl apply -f deployment.yaml
+kubectl apply -f service.yaml
+```
+
 
 ## Implement CI/CD Pipeline: 
 
-Establish a Continuous Integration and Continuous Deployment (CI/CD) pipeline to automate the testing, building, and deployment processes of the application. This pipeline should support rapid iteration and deployment of changes to the service.
-
+A gitlab `.gitlab-ci.yml` file is included in the repository. The pipeline is configured to build the Rust web service, containerize it, and deploy it to a Kubernetes cluster. The pipeline should be triggered automatically upon pushing changes to the repository.
