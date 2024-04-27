@@ -15,7 +15,7 @@ COPY . .
 RUN cargo build --release
 
 # Install Python dependencies
-RUN pip install --no-cache-dir -r requirements.txt
+RUN pip install --no-cache-dir torch transformers
 
 
 # Use a Debian slim image as the runtime environment

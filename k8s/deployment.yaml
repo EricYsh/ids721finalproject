@@ -1,0 +1,19 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: idsfinal-deployment
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: idsfinal
+  template:
+    metadata:
+      labels:
+        app: idsfinal
+    spec:
+      containers:
+      - name: idsfinal
+        image: yzy1121/idsfinal:latest
+        ports:
+        - containerPort: 8080
