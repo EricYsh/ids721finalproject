@@ -83,10 +83,11 @@ jobs:
           pip install transformers torch
 
       - uses: actions/checkout@v3
-      - name: Set up kubectl
-        uses: azure/setup-kubectl@v1
-        with:
-          version: '1.30.0'
+      - name: Install kubectl
+        run: |
+          curl -LO "https://storage.googleapis.com/kubernetes-release/release/v1.30.0/bin/linux/amd64/kubectl"
+          chmod +x ./kubectl
+          sudo mv ./kubectl /usr/local/bin/kubectl
       - name: Deploy to Kubernetes
         run: kubectl apply -f k8s/deployment.yaml
       - name: Deploy service
