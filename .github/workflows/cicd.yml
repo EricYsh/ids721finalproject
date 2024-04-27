@@ -145,6 +145,5 @@ jobs:
           ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
           IMAGE_TAG: ${{ steps.commit.outputs.short }}
         run: |
-          kubectl create namespace eks-app
           kubectl apply -f eks-deployment.yaml
           kubectl apply -f eks-service.yaml

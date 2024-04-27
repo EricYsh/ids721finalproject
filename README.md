@@ -4,6 +4,27 @@
 > By Team 24
 > Members: Zeyu Yuan, Shanghui Yin, Yang Ouyang, Guowang Zeng
 
+## Demo Video
+
+Here is our demo video: 
+
+## Prerequisites
+
+Ensure the following software is installed:
+
+- Rust environment (including Cargo)
+- Actix-web
+- Python 3.9
+- AWS CLI
+- AWS ECR
+- AWS EKS
+- AWS IAM
+- Docker, Docker Hub
+- kubectl with Kubernetes cluster connection configured
+- eksctl
+- Github Actions
+- HuggingFace transformers
+
 
 ## Requirements:
 
@@ -54,6 +75,7 @@ eksctl create cluster --name test-eks --region us-east-2
 
 
 ```bash
+kubectl create namespace eks-app
 kubectl apply -f deployment.yaml
 kubectl apply -f service.yaml
 ```
