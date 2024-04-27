@@ -1,0 +1,12 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: idsfinal-loadbalancer-service
+spec:
+  type: LoadBalancer
+  selector:
+    app: idsfinal
+  ports:
+  - protocol: TCP
+    port: 8080        # The port that the service exposes externally
+    targetPort: 8080  # The target port on the pods to which the traffic is directed
