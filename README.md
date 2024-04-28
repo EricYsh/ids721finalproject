@@ -24,6 +24,8 @@ Ensure the following software is installed:
 - eksctl
 - Github Actions
 - HuggingFace transformers
+- Helm CLI 3.0 or later
+- a Linux or macOS computer to perform the steps in the following sections
 
 
 ## Requirements:
@@ -92,6 +94,12 @@ kubectl apply -f eks-deployment.yaml
 kubectl apply -f eks-service.yaml
 ```
 
+![deploy to eks](img/kubectlall.jpg)
+
+### Test the service by using Postman
+
+![test the service](img/externalpostman.jpg)
+
 
 ## Implement CI/CD Pipeline: 
 
@@ -116,3 +124,68 @@ A github `cicd.yml` file is included in the repository. The pipeline is configur
     - Uses actions to configure AWS credentials, log into Amazon ECR, and push the Docker image to AWS's ECR.
     - Updates Kubernetes configuration to connect to an Amazon EKS cluster.
     - Deploys to the Amazon EKS cluster using Kubernetes deployment and service configuration files specified in eks-deployment.yaml and eks-service.yaml.
+
+## Monitoring and Metrics
+
+Amazon Managed Service for Prometheus supports ingesting metrics from Prometheus servers in clusters running Amazon EKS and in self-managed Kubernetes clusters running on Amazon EC2. The detailed instructions in this section are for a Prometheus server in an Amazon EKS cluster. The steps for a self-managed Kubernetes cluster on Amazon EC2 are the same, except that you will need to set up the OIDC provider and IAM roles for service accounts yourself in the Kubernetes cluster.
+
+### Step 1: Add new Helm chart repositories
+
+To add new Helm chart repositories, enter the following commands. For more information about these commands, see Helm Repo.
+
+```bash
+helm repo add prometheus-community https://prometheus-community.github.io/helm-charts
+helm repo add kube-state-metrics https://kubernetes.github.io/kube-state-metrics
+helm repo update
+```
+
+## Create a Prometheus namespace
+
+```
+kubectl create namespace prometheus-agent-namespace
+```
+
+## Step 3: Set up the new server and start ingesting metrics
+
+Use a text editor to create a file named my_prometheus_values_yaml with the following content.
+
+Replace IAM_PROXY_PROMETHEUS_ROLE_ARN with the ARN of the amp-iamproxy-ingest-role that you created in Set up service roles for the ingestion of metrics from Amazon EKS clusters.
+
+Replace WORKSPACE_ID with the ID of your Amazon Managed Service for Prometheus workspace.
+
+Replace REGION with the Region of your Amazon Managed Service for Prometheus workspace.
+
+```yaml
+## The following is a set of default values for prometheus server helm chart which enable remoteWrite to AMP
+## For the rest of prometheus helm chart values see: https://github.com/prometheus-community/helm-charts/blob/main/charts/prometheus/values.yaml
+##
+serviceAccounts:
+  server:
+    name: amp-iamproxy-ingest-service-account
+    annotations: 
+      eks.amazonaws.com/role-arn: ${IAM_PROXY_PROMETHEUS_ROLE_ARN}
+server:
+  remoteWrite:
+    - url: https://aps-workspaces.${REGION}.amazonaws.com/workspaces/${WORKSPACE_ID}/api/v1/remote_write
+      sigv4:
+        region: ${REGION}
+      queue_config:
+        max_samples_per_send: 1000
+        max_shards: 200
+        capacity: 2500
+```
+
+Enter the following command to create the Prometheus server.
+
+Replace prometheus-chart-name with your Prometheus release name.
+
+Replace prometheus-agent-namespace with the name of your Prometheus namespace.
+
+```bash
+helm install prometheus-chart-name prometheus-community/prometheus -n prometheus-agent-namespace \
+-f my_prometheus_values_yaml
+```
+
+> The Prometheus server is now set up to ingest metrics from the Amazon EKS cluster.
+
+![img.png](img/img.png)

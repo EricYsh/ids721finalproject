@@ -1,0 +1,17 @@
+## The following is a set of default values for prometheus server helm chart which enable remoteWrite to AMP
+## For the rest of prometheus helm chart values see: https://github.com/prometheus-community/helm-charts/blob/main/charts/prometheus/values.yaml
+##
+serviceAccounts:
+  server:
+    name: amp-iamproxy-ingest-service-account
+    annotations:
+      eks.amazonaws.com/role-arn: arn:aws:aps:us-east-2:851725647346:workspace/ws-4e5055e0-64cf-4679-9ea6-be2b5ef8711e
+server:
+  remoteWrite:
+    - url: https://aps-workspaces.us-east-2.amazonaws.com/workspaces/ws-4e5055e0-64cf-4679-9ea6-be2b5ef8711e/api/v1/remote_write
+      sigv4:
+        region: us-east-2
+      queue_config:
+        max_samples_per_send: 1000
+        max_shards: 200
+        capacity: 2500
