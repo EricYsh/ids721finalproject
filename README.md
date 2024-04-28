@@ -6,7 +6,7 @@
 
 ## Demo Video
 
-Here is our demo video: 
+Here is our demo video: https://youtu.be/PdiYhbwhc2M
 
 ## Prerequisites
 
