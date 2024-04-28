@@ -45,6 +45,8 @@ Develop a web service in Rust that can serve the ML model's inferences. The serv
 Containerize the Rust web service using Docker, ensuring it's well-prepared for deployment. Subsequently, deploy the containerized service to a Kubernetes cluster, configuring it for scalability and reliability.
 
 Build the Rust web service into a Docker container, ensuring it's well-prepared for deployment. Subsequently, deploy the containerized service to a Kubernetes cluster, configuring it for scalability and reliability.
+![test the service](img/minikubestatus.png)
+
 
 ### Build the docker file
 ```bash
@@ -56,7 +58,6 @@ Build the Rust web service into a Docker container, ensuring it's well-prepared 
 docker run -p 8080:8080 test-ecr
 ```
 
-
 ### Test the service
 ```bash
 curl -X POST http://localhost:8080/summarize -H "Content-Type: application/json" -d '{"text": "Many companies have outsourced their hiring processes to recruitment process outsourcers, which often use subcontractors, particularly in India and the Philippines, to find potential candidates. The essay also mentions the use of digital tracking to identify potential candidates."}'
@@ -67,6 +68,7 @@ curl -X POST http://localhost:8080/summarize -H "Content-Type: application/json"
 }
 ```
 ![test the service](img/test_the_service.png)
+![test the service](img/externalpostman.jpg)
 
 ### Push the docker image to ECR
 ```bash
