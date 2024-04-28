@@ -189,3 +189,9 @@ helm install prometheus-chart-name prometheus-community/prometheus -n prometheus
 > The Prometheus server is now set up to ingest metrics from the Amazon EKS cluster.
 
 ![img.png](img/img.png)
+
+## References
+1. https://docs.aws.amazon.com/prometheus/latest/userguide/AMP-onboard-ingest-metrics.html
+2. https://docs.aws.amazon.com/zh_cn/eks/latest/userguide/cluster-insights.html
+3. https://kubernetes.io/docs/concepts/services-networking/service/#loadbalancer
+4. https://docs.aws.amazon.com/zh_cn/eks/latest/userguide/sample-deployment.html
