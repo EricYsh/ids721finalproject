@@ -88,8 +88,8 @@ eksctl create cluster --name test-eks --region us-east-2
 
 ```bash
 kubectl create namespace eks-app
-kubectl apply -f deployment.yaml
-kubectl apply -f service.yaml
+kubectl apply -f eks-deployment.yaml
+kubectl apply -f eks-service.yaml
 ```
 
 
