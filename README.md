@@ -85,22 +85,22 @@ kubectl apply -f service.yaml
 
 A github `cicd.yml` file is included in the repository. The pipeline is configured to build the Rust web service, containerize it, and deploy it to a Kubernetes cluster. The pipeline should be triggered automatically upon pushing changes to the repository. It has features such as environment variables, jobs, and triggers:
 ### Triggers:
-- push: The workflow is triggered on a push to the main branch.
-- pull_request: The workflow is also triggered on pull requests to the main branch.
+- `push`: The workflow is triggered on a push to the main branch.
+- `pull_request`: The workflow is also triggered on pull requests to the main branch.
 ### Environment Variables:
 - Sets up several environment variables such as ECR_REPOSITORY, EKS_CLUSTER_NAME, and AWS_REGION which are used throughout the workflow.
 ### Jobs:
-- build:
-Runs on an Ubuntu latest virtual machine.
-Uses Docker's dind (Docker in Docker) service to build a Docker image.
-Logs into DockerHub and pushes a Docker image tagged as idsfinal.
-- test:
-Depends on the build job.
-Uses a Rust environment for testing.
-Sets up Python and installs dependencies.
-Runs Rust tests specified by the command cargo test.
-- deploy:
-Depends on the test job.
-Uses actions to configure AWS credentials, log into Amazon ECR, and push the Docker image to AWS's ECR.
-Updates Kubernetes configuration to connect to an Amazon EKS cluster.
-Deploys to the Amazon EKS cluster using Kubernetes deployment and service configuration files specified in eks-deployment.yaml and eks-service.yaml.
+- `build`:
+    - Runs on an Ubuntu latest virtual machine.
+    - Uses Docker's dind (Docker in Docker) service to build a Docker image.
+    - Logs into DockerHub and pushes a Docker image tagged as idsfinal.
+- `test`:
+    - Depends on the build job.
+    - Uses a Rust environment for testing.
+    - Sets up Python and installs dependencies.
+    - Runs Rust tests specified by the command cargo test.
+- `deploy`:
+    - Depends on the test job.
+    - Uses actions to configure AWS credentials, log into Amazon ECR, and push the Docker image to AWS's ECR.
+    - Updates Kubernetes configuration to connect to an Amazon EKS cluster.
+    - Deploys to the Amazon EKS cluster using Kubernetes deployment and service configuration files specified in eks-deployment.yaml and eks-service.yaml.
