@@ -54,6 +54,16 @@ Build the Rust web service into a Docker container, ensuring it's well-prepared 
 docker run -p 8080:8080 test-ecr
 ```
 
+### Test the service
+```bash
+curl -X POST http://localhost:8080/summarize -H "Content-Type: application/json" -d '{"text": "Many companies have outsourced their hiring processes to recruitment process outsourcers, which often use subcontractors, particularly in India and the Philippines, to find potential candidates. The essay also mentions the use of digital tracking to identify potential candidates."}'
+
+## Response 
+{
+  "summary_text": "Many companies outsource their hiring processes to recruitment process outsourcers."
+}
+```
+
 ### Push the docker image to ECR
 ```bash
 aws ecr get-login-password --region us-east-1 | docker login --username AWS --password-stdin 123456789012.dkr.ecr.us-east-1.amazonaws.com
