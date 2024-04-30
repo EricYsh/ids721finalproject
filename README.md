@@ -8,6 +8,12 @@
 
 Here is our demo video: https://youtu.be/PdiYhbwhc2M
 
+## Demo Link
+
+http://a14d23a3eddfd47a38d262bade2fe856-387472351.us-east-2.elb.amazonaws.com:8080/summarize
+
+![Demo](img/externalpostman.jpg)
+
 ## Prerequisites
 
 Ensure the following software is installed:
